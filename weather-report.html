@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Report</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+      * {
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        margin-top: 150px;
+        background-image: url("https://th.bing.com/th/id/R.16cf166459bf6af574806f3f2b3026d6?rik=fKOMOekECCWVZw&riu=http%3a%2f%2fwww.pixelstalk.net%2fwp-content%2fuploads%2f2016%2f04%2fSnow-mountain-wallpaper-HD.jpg&ehk=C296jFxystbw7V832eAUOvor6mZPqVtWrsjWIHvWVDk%3d&risl=&pid=ImgRaw&r=0");
+        font-family: serif;
+      }
+
+      .card {
+        background-color: #080808d8;
+        color: white;
+        font-family: serif;
+        border-radius: 30px;
+        width: fit-content;
+        padding: 20px;
+        min-width: 350px;
+      }
+
+      .search-bar {
+        background-color: #7c7c7c2b;
+        border-radius: 20px;
+        border: None;
+        color: white;
+        outline: None;
+        font-size: 100%;
+        padding: 3px 0px 3px 15px;
+      }
+
+      .search-bar:hover {
+        background-color: rgb(68, 71, 70);
+        outline: None;
+      }
+
+      .search-button {
+        background: #7c7c7c2b;
+        border: None;
+        border-radius: 50%;
+        position: relative;
+        height: 30px;
+        width: 30px;
+        color: white;
+      }
+
+      .search-button:hover {
+        background-color: rgb(68, 71, 70);
+        cursor: pointer;
+      }
+
+      .search-button:active {
+        transform: translateY(1px);
+      }
+
+      .weather {
+        margin: 10px;
+      }
+
+      div {
+        margin: 5px;
+        font-size: 20px;
+      }
+
+      .temp {
+        font-size: 30px;
+      }
+
+      #btn,
+      #cancel,
+      #sidebar {
+        z-index: 1;
+      }
+
+      #sidebar {
+        background-color: rgba(133, 180, 211, 0.975);
+        top: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card">
+      <div class="search">
+        <input type="text" class="search-bar" placeholder="Search" />
+        <button class="search-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            class="bi bi-search"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="weather">
+        <h2 class="city"></h2>
+        <div class="temp"></div>
+        <img src="" alt="" class="icon" />
+        <div class="description" style="text-transform: capitalize"></div>
+        <div class="humidity"></div>
+        <div class="wind"></div>
+      </div>
+    </div>
+  </body>
+  <script>
+    let weather = {
+      apikey: "1f461fad2a35a5739ed599dc43bfc171",
+      fetchweather: function (city) {
+        fetch(
+          "https://api.openweathermap.org/data/2.5/weather?q=" +
+            city +
+            "&units=metric&appid=" +
+            this.apikey
+        )
+          .then((response) => response.json())
+          .then((data) => this.displayweather(data));
+      },
+
+      displayweather: function (data) {
+        const { name } = data;
+        const { icon, description } = data.weather[0];
+        const { temp, humidity } = data.main;
+        const { speed } = data.wind;
+        console.log(name, icon, description, temp, humidity, speed);
+        document.querySelector(".city").innerText = "Weather in " + name;
+        document.querySelector(".icon").src =
+          "https://openweathermap.org/img/wn/" + icon + ".png";
+        document.querySelector(".description").innerText = description;
+        document.querySelector(".temp").innerText = temp + "°C";
+        document.querySelector(".humidity").innerText =
+          "Humidity: " + humidity + "%";
+        document.querySelector(".wind").innerText =
+          "Wind Speed: " + speed + "km/h";
+      },
+      search: function () {
+        this.fetchweather(document.querySelector(".search-bar").value);
+      },
+    };
+
+    document
+      .querySelector(".search-button")
+      .addEventListener("click", function () {
+        weather.search();
+      });
+
+    document
+      .querySelector(".search-bar")
+      .addEventListener("keyup", function (event) {
+        if (event.key == "Enter") {
+          weather.search();
+        }
+      });
+  </script>
+</html>
